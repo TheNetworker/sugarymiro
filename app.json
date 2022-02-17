@@ -1,0 +1,62 @@
+{
+  "name": "CGM Tracking Tool",
+  "description": "A tool used to run different algorithms to track glucose levels and send notification to the IFTTT webhook.",
+  "repository": "https://github.com/heroku/python-getting-started",
+  "keywords": ["python", "nightscout", "cgm", "glucose", "ifttt" ],
+  "addons": [ "papertrail" ],
+  "env": {
+    "Your_IFTTT_Key": {
+      "description": "Please provide the IFTTT key String to connect to your IFTTT account. You can obtain it after creating the IFTTT webhook by clicking on 'Documentation' at this url (https://ifttt.com/maker_webhooks).",
+      "value": "",
+      "required": true
+    },
+    "NightScout_URL": {
+      "description": "Please provide the URL of your NightScout server which is usually deployed on heroku app. For example: https://my-cgm.herokuapp.com/",
+      "value": "",
+      "required": true
+    },
+    "NightScout_API_Key": {
+      "description": "Please provide the API key of your NightScout server which is being configured during initial NightScout instance deployment. If you don't know it, then go to settings of your app under (https://dashboard.heroku.com/apps) then 'Reveal Config Vars'. it should be in 'API_SECRET'",
+      "value": "",
+      "required": true
+    },
+    "Your_Time_Zone": {
+      "description": "Please provide your timezone. this is used to calculate the time difference between your local time and NightScout server time. For example: 'America/Los_Angeles'",
+      "value": "Asia/Riyadh",
+      "required": true
+    },
+    "NightShift_Only": {
+      "description": "Please provide if you want the app to run only during night shift (from 9PM at your local time to 9AM next day). supported values are 'yes' or 'no'",
+      "value": "no",
+      "required": false
+    },
+    "Target_Reading": {
+      "description": "Please provide the target SGV reading that you configured in your CGM. For example: 100",
+      "value": "100",
+      "required": true
+    },
+    "Low_Reading": {
+      "description": "Please provide the low value SGV reading that you configured in your CGM. For example: 65",
+      "value": "60",
+      "required": true
+    },
+    "High_Reading": {
+      "description": "Please provide the high value SGV reading that you configured in your CGM. For example: 350",
+      "value": "350",
+      "required": true
+    },
+    "margin": {
+      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: (350+100)/2=225 and the margin is: 10, then the app will send notification if the calculated average reading is: (350+100)/2=225 + 10 = 235. The default is fine for most cases.",
+      "value": "10",
+      "required": false
+    }
+  },
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "python manage.py collectstatic --noinput",
+        "test": "python manage.py test"
+      }
+    }
+  }
+}
