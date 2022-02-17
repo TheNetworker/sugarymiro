@@ -2,7 +2,7 @@
   "name": "SugaryMiro",
   "description": "An application used to analyze SGV entries returned from NightScout online instance and send notification to the user using the IFTTT service if it's high/low for long period of time",
   "repository": "https://github.com/TheNetworker/sugarymiro",
-  "logo": "https://raw.githubusercontent.com/TheNetworker/sugarymiro/master/assets/logo.png",
+  "logo": "https://github.com/TheNetworker/sugarymiro/blob/master/README.assets/SugaryMiro.png?raw=true",
   "keywords": ["python", "nightscout", "cgm", "glucose", "ifttt" ],
   "addons": [ "papertrail" ],
   "env": {
