@@ -243,7 +243,7 @@ class NightScout_Tools(api_client):
             if mean_sgv_within_duration > (mean_high_target + self.margin):  # 270
                 if last_entry_direction in self.hypoglycemia_directions:
                     response_payload["action"] = "wait"
-                    response_payload["sleep_in_sec"] = 930  # wait for another ~ 15 minutes and check again
+                    response_payload["sleep_in_sec"] = 930  # wait for another ~ 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_high_target + self.margin
 
@@ -251,7 +251,7 @@ class NightScout_Tools(api_client):
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
                     response_payload["action"] = "high_alert"
-                    response_payload["sleep_in_sec"] = self.default_retry_time
+                    response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_low_target + self.margin
 
@@ -263,14 +263,14 @@ class NightScout_Tools(api_client):
                 if last_entry_direction in self.hyperglycemia_directions:
 
                     response_payload["action"] = "wait"
-                    response_payload["sleep_in_sec"] = 930  # wait for another 15 minutes and check again
+                    response_payload["sleep_in_sec"] = 930  # wait for another 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_low_target + self.margin
                     return response_payload  # snooze for ~ 15 minutes and then check again
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
                     response_payload["action"] = "low_alert"
-                    response_payload["sleep_in_sec"] = self.default_retry_time
+                    response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_low_target + self.margin
                     return response_payload
