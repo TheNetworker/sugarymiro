@@ -32,7 +32,7 @@ class api_client(object):
                  verify=False):
 
         _ = requote_uri("https://" + url if not url.startswith("https://") else url)
-
+        self.url = url
         self.url = _.strip() + "/" if _[-1] != '/' else self.url.strip()
         self.username = username
         self.password = password
