@@ -21,6 +21,7 @@ import time
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
 class api_client(object):
     def __init__(self, url,
                  username="",
@@ -29,7 +30,6 @@ class api_client(object):
                  headers={'Accept': 'application/json', "Content-Type": "application/json", },
                  params={},
                  verify=False):
-
 
         _ = requote_uri("https://" + url if not url.startswith("https://") else url)
 
@@ -125,10 +125,10 @@ class api_client(object):
 
 
 class NightScout_Tools(api_client):
-    def __init__(self, user_timezone, target_reading, low_reading,
-                 high_reading, margin, **kwargs):
+    def __init__(self, url, api_key, user_timezone, target_reading, low_reading,
+                 high_reading, margin):
 
-        super().__init__(**kwargs)
+        super(NightScout_Tools, self).__init__(url=url, )
         self.api_token = hashlib.sha1(api_key.encode()).hexdigest()
         self.headers["API_SECRET"] = self.api_token
         self.params = {"count": "14"}  # 14 readings should be okay to cover 60 minutes with 2 readings buffer
@@ -366,7 +366,6 @@ if __name__ == '__main__':
         #     print(k + ':', v)
         # print('\n')
 
-
         if nightshift_only.lower() == "yes":
             print("working in nightshift only mode")
             nightshift_start_hour = 21
@@ -376,7 +375,8 @@ if __name__ == '__main__':
                 print("Nightshift started.")
                 next_sleep = dispatch()
 
-            elif time_now_at_user.hour == (nightshift_start_hour - 1): #we're just before the starting of nightshift (i.e the user started the app at 20:30)
+            elif time_now_at_user.hour == (
+                    nightshift_start_hour - 1):  # we're just before the starting of nightshift (i.e the user started the app at 20:30)
                 date_1 = '{}/{}/{} {}:{}:{}'.format(time_now_at_user.day,
                                                     time_now_at_user.month,
                                                     time_now_at_user.year,
@@ -388,7 +388,7 @@ if __name__ == '__main__':
                                                     time_now_at_user.month,
                                                     time_now_at_user.year,
                                                     nightshift_start_hour,
-                                                    )   #nightshift starts at 21:00
+                                                    )  # nightshift starts at 21:00
                 date_format_str = '%d/%m/%Y %H:%M:%S'
                 start = datetime.datetime.strptime(date_1, date_format_str)
                 end = datetime.datetime.strptime(date_2, date_format_str)
@@ -397,14 +397,14 @@ if __name__ == '__main__':
                 print('Difference between two datetimes in seconds: {}'.format(diff.seconds))
                 next_sleep = diff.total_seconds()
 
-            else: #anything else
-                next_sleep = 3650 # sleep for another hour till next nightshift
+            else:  # anything else
+                next_sleep = 3650  # sleep for another hour till next nightshift
 
-        else: # running all the day
+        else:  # running all the day
             next_sleep = dispatch()
 
         next_sleep = int(next_sleep)
-        print("{} - Next check is in ~ {} minutes".format(time_now_at_user, int(next_sleep/60)))
+        print("{} - Next check is in ~ {} minutes".format(time_now_at_user, int(next_sleep / 60)))
         print("==================================================================")
         # next_sleep = 20
         time.sleep(next_sleep)
