@@ -4,4 +4,4 @@
 
 
 
-[![Deploy](README.assets/button.svg)](https://heroku.com/deploy?template=https://github.com/TheNetworker/sugarymiro/tree/master)
+[![Deploy](README.assets/button.svg)](https://heroku.com/deploy)
