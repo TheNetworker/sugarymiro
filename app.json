@@ -1,7 +1,7 @@
 {
   "name": "CGM Tracking Tool",
-  "description": "A tool used to run different algorithms to track glucose levels and send notification to the IFTTT webhook.",
-  "repository": "https://github.com/heroku/python-getting-started",
+  "description": "An application used to analyze SGV entries returned from NightScout online instance and send notification to the user using the IFTTT service if it's high/low for long period of time",
+  "repository": "https://github.com/TheNetworker/sugarymiro",
   "keywords": ["python", "nightscout", "cgm", "glucose", "ifttt" ],
   "addons": [ "papertrail" ],
   "env": {
