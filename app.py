@@ -243,6 +243,7 @@ class NightScout_Tools(api_client):
 
             if mean_sgv_within_duration > (mean_between_high_and_target + self.high_margin):  # 270
                 if last_entry_direction in self.hypoglycemia_directions:
+                    print("The last entry has a direction within a hypoglycemia, we will be waiting for it to drop then check again")
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another ~ 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
@@ -251,6 +252,7 @@ class NightScout_Tools(api_client):
                     return response_payload  # snooze for ~ 15 minutes and then check again
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
+                    print("High Alert!")
                     response_payload["action"] = "high_alert"
                     response_payload["sleep_in_sec"] = self.default_retry_time  # we can also snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
@@ -262,7 +264,7 @@ class NightScout_Tools(api_client):
             elif mean_sgv_within_duration < (mean_between_low_and_target - self.low_margin):
 
                 if last_entry_direction in self.hyperglycemia_directions:
-
+                    print("The last entry has a direction within a hyperglycemia, we will be waiting for it to raise then check again")
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
@@ -270,6 +272,7 @@ class NightScout_Tools(api_client):
                     return response_payload  # snooze for ~ 15 minutes and then check again
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
+                    print("Low Alert!")
                     response_payload["action"] = "low_alert"
                     response_payload["sleep_in_sec"] = self.default_retry_time  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
@@ -277,9 +280,11 @@ class NightScout_Tools(api_client):
                     return response_payload
 
             else:
+                print("No Alert!")
                 return response_payload
 
         else:
+            print("Data is not valid")
             response_payload[
                 "error_message"] = "Returned data from NightScout are old, Seconds difference is {}, Retrying in {} seconds".format(
                 self.refined_data[-1]["seconds_difference"], self.default_retry_time)
@@ -341,8 +346,14 @@ def dispatch():
             if ns_response["action"] == "wait":
                 print("Waiting...")
                 next_sleep = ns_response["sleep_in_sec"]
-            else:
-                print("No action taken, everything seems normal")
+
+            else: # no action found, let's see if there's any error message returned
+                if ns_response["error_message"]:
+                    print(ns_response["error_message"])
+                else:
+                    print("No action taken, everything seems normal")
+
+
 
     return next_sleep
 
@@ -354,7 +365,7 @@ if __name__ == '__main__':
         api_key = os.environ.get("NightScout_API_Key")  # NightScout API Key
         ifttt_key = os.environ.get("Your_IFTTT_Key")  # IFTTT Key
         mytz = os.environ.get("Your_Time_Zone", "Asia/Riyadh")  # Your Time Zone
-        nightshift_only = os.environ.get("NightShift_Only", "yes")  # NightShift Only
+        nightshift_only = os.environ.get("NightShift_Only", "no")  # NightShift Only
         target_reading = int(os.environ.get("Target_Reading", 150))  # Target Reading
         low_threshold = int(os.environ.get("Low_Reading", 60))  # Target Reading
         high_threshold = int(os.environ.get("High_Reading", 350))  # Target Reading
