@@ -53,7 +53,7 @@
     },
     "Low_Margin": {
       "description": "The app will send notification if the calculated average reading is exceeding low average - configured margin. For example, if the low reading is set to: 60, target reading is set to: 150 and the margin is: 35, then the app will send notification if the calculated average SVG over last period of time is below than: (150+60)/2=105 - 35 = 70.",
-      "value": "15",
+      "value": "35",
       "required": false
     }
   },

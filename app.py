@@ -229,7 +229,7 @@ class NightScout_Tools(api_client):
 
         if self.data_is_valid(type=type):  # if the data is valid (like serializer in Django Rest Framework :D)
             sgvs = [sgv["sgv"] for sgv in self.refined_data]
-            mean_sgv_within_duration = sum(sgvs) / len(sgvs)
+            mean_sgv_within_duration = int(sum(sgvs) / len(sgvs))
             last_entry_direction = self.refined_data[-1]["direction"]
 
             mean_between_high_and_target = (self.target_reading + self.high_reading) / 2
@@ -252,7 +252,7 @@ class NightScout_Tools(api_client):
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
                     response_payload["action"] = "high_alert"
-                    response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
+                    response_payload["sleep_in_sec"] = self.default_retry_time  # we can also snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_between_high_and_target + self.high_margin
 
@@ -271,7 +271,7 @@ class NightScout_Tools(api_client):
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
                     response_payload["action"] = "low_alert"
-                    response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
+                    response_payload["sleep_in_sec"] = self.default_retry_time  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
                     response_payload["expected"] = mean_between_low_and_target - self.low_margin
                     return response_payload
