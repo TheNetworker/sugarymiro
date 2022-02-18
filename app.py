@@ -343,7 +343,7 @@ def dispatch():
                     print("received error from IFTTT, will try again in 30sec")
                     next_sleep = 30
 
-            if ns_response["action"] == "wait":
+            elif ns_response["action"] == "wait":
                 print("Waiting...")
                 next_sleep = ns_response["sleep_in_sec"]
 
