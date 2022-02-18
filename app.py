@@ -230,11 +230,11 @@ class NightScout_Tools(api_client):
         if self.data_is_valid(type=type):  # if the data is valid (like serializer in Django Rest Framework :D)
             sgvs = [sgv["sgv"] for sgv in self.refined_data]
             mean_sgv_within_duration = int(sum(sgvs) / len(sgvs))
-            last_entry_direction = self.refined_data[-1]["direction"]
+            newest_entry_direction = self.refined_data[0]["direction"]
 
             mean_between_high_and_target = (self.target_reading + self.high_threshold) / 2
             mean_between_low_and_target = (self.target_reading + self.low_threshold) / 2
-            response_payload["last_data_entry"] = self.refined_data[-1]
+            response_payload["newest_entry"] = self.refined_data[0]
 
             # Test Data
             # mean_sgv_within_duration = 400 #testing the high
@@ -242,7 +242,7 @@ class NightScout_Tools(api_client):
             # last_entry_direction = "FLAT" #bypass the last entry direction check (i.e action:wait)
 
             if mean_sgv_within_duration > (mean_between_high_and_target + self.high_margin):  # 270
-                if last_entry_direction in self.hypoglycemia_directions:
+                if newest_entry_direction in self.hypoglycemia_directions:
                     print("The last entry has a direction within a hypoglycemia, we will be waiting for it to drop then check again")
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another ~ 15 minutes and check again till it become stable
@@ -263,7 +263,7 @@ class NightScout_Tools(api_client):
 
             elif mean_sgv_within_duration < (mean_between_low_and_target - self.low_margin):
 
-                if last_entry_direction in self.hyperglycemia_directions:
+                if newest_entry_direction in self.hyperglycemia_directions:
                     print("The last entry has a direction within a hyperglycemia, we will be waiting for it to raise then check again")
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another 15 minutes and check again till it become stable
