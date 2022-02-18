@@ -234,7 +234,7 @@ class NightScout_Tools(api_client):
 
             mean_between_high_and_target = (self.target_reading + self.high_threshold) / 2
             mean_between_low_and_target = (self.target_reading + self.low_threshold) / 2
-            response_payload["last_data_entry"] = self.refined_data[0]
+            response_payload["last_data_entry"] = self.refined_data[-1]
 
             # Test Data
             # mean_sgv_within_duration = 400 #testing the high
