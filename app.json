@@ -32,12 +32,12 @@
       "required": false
     },
     "Target_Reading": {
-      "description": "Please provide the target SGV reading that you configured in your CGM. For example: 100",
-      "value": "100",
+      "description": "Please provide the target SGV reading that you configured in your CGM. For example: 150",
+      "value": "150",
       "required": true
     },
     "Low_Reading": {
-      "description": "Please provide the low value SGV reading that you configured in your CGM. For example: 65",
+      "description": "Please provide the low value SGV reading that you configured in your CGM. For example: 60",
       "value": "60",
       "required": true
     },
@@ -47,8 +47,8 @@
       "required": true
     },
     "margin": {
-      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: (350+100)/2=225 and the margin is: 10, then the app will send notification if the calculated average reading is: (350+100)/2=225 + 10 = 235. The default is fine for most cases.",
-      "value": "10",
+      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: 350 and the margin is: 15, then the app will send notification if the calculated average reading is: (350+150)/2=250 + 15 = 265. The default margin (15) should be fine for most cases.",
+      "value": "15",
       "required": false
     }
   },
