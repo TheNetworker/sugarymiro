@@ -253,7 +253,7 @@ class NightScout_Tools(api_client):
                     response_payload["action"] = "high_alert"
                     response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
-                    response_payload["expected"] = mean_low_target + self.margin
+                    response_payload["expected"] = mean_high_target + self.margin
 
                     return response_payload
 

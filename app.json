@@ -47,7 +47,7 @@
       "required": true
     },
     "margin": {
-      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: 350 and the margin is: 15, then the app will send notification if the calculated average reading is: (350+150)/2=250 + 15 = 265. The default margin (15) should be fine for most cases.",
+      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: 350 and the margin is: 15, then the app will send notification if the calculated average reading is larger than: (350+150)/2=250 + 15 = 265. The default margin (15) should be fine for most cases.",
       "value": "15",
       "required": false
     }
