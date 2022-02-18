@@ -36,23 +36,23 @@
       "value": "150",
       "required": true
     },
-    "Low_Reading": {
-      "description": "Please provide the low value SGV reading that you configured in your CGM. For example: 60",
+    "Low_Threshold": {
+      "description": "Please provide the low threshold value for the SGV reading that you configured in your CGM. For example: 60",
       "value": "60",
       "required": true
     },
-    "High_Reading": {
-      "description": "Please provide the high value SGV reading that you configured in your CGM. For example: 350",
+    "High_Threshold": {
+      "description": "Please provide the high threshold value for the SGV reading that you configured in your CGM. For example: 350",
       "value": "350",
       "required": true
     },
     "High_Margin": {
-      "description": "The app will send notification if the calculated average reading is exceeding high average + configured margin. For example, if the high reading is set to: 350, target reading is set to: 150 and the margin is: 15, then the app will send notification if the calculated average SVG over last period of time is above than: (350+150)/2=250 + 15 = 265. ",
+      "description": "The app will send notification if the calculated average reading is exceeding high average + configured margin. For example, if the high threshold is set to: 350, target reading is set to: 150 and the margin is: 15, then the app will send notification if the calculated average SVG over last period of time is above than: (350+150)/2=250 + 15 = 265. ",
       "value": "15",
       "required": false
     },
     "Low_Margin": {
-      "description": "The app will send notification if the calculated average reading is exceeding low average - configured margin. For example, if the low reading is set to: 60, target reading is set to: 150 and the margin is: 35, then the app will send notification if the calculated average SVG over last period of time is below than: (150+60)/2=105 - 35 = 70.",
+      "description": "The app will send notification if the calculated average reading is exceeding low average - configured margin. For example, if the low threshold is set to: 60, target reading is set to: 150 and the margin is: 35, then the app will send notification if the calculated average SVG over last period of time is below than: (150+60)/2=105 - 35 = 70.",
       "value": "35",
       "required": false
     }

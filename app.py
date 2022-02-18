@@ -125,8 +125,8 @@ class api_client(object):
 
 
 class NightScout_Tools(api_client):
-    def __init__(self, url, api_key, user_timezone, target_reading, low_reading,
-                 high_reading, high_margin, low_margin):
+    def __init__(self, url, api_key, user_timezone, target_reading, low_threshold,
+                 high_threshold, high_margin, low_margin):
 
         super(NightScout_Tools, self).__init__(url=url, )
         self.api_token = hashlib.sha1(api_key.encode()).hexdigest()
@@ -134,8 +134,8 @@ class NightScout_Tools(api_client):
         self.params = {"count": "14"}  # 14 readings should be okay to cover 60 minutes with 2 readings buffer
 
         self.target_reading = target_reading
-        self.low_reading = low_reading
-        self.high_reading = high_reading
+        self.low_threshold = low_threshold
+        self.high_threshold = high_threshold
         self.high_margin = high_margin
         self.low_margin = low_margin
         self.user_timezone = user_timezone
@@ -232,8 +232,8 @@ class NightScout_Tools(api_client):
             mean_sgv_within_duration = int(sum(sgvs) / len(sgvs))
             last_entry_direction = self.refined_data[-1]["direction"]
 
-            mean_between_high_and_target = (self.target_reading + self.high_reading) / 2
-            mean_between_low_and_target = (self.target_reading + self.low_reading) / 2
+            mean_between_high_and_target = (self.target_reading + self.high_threshold) / 2
+            mean_between_low_and_target = (self.target_reading + self.low_threshold) / 2
             response_payload["last_data_entry"] = self.refined_data[0]
 
             # Test Data
@@ -306,8 +306,8 @@ def dispatch():
                                 api_key=api_key,
                                 user_timezone=mytz,
                                 target_reading=target_reading,
-                                low_reading=low_reading,
-                                high_reading=high_reading,
+                                low_threshold=low_threshold,
+                                high_threshold=high_threshold,
                                 high_margin=high_margin,
                                 low_margin=low_margin,
                                 )
@@ -356,8 +356,8 @@ if __name__ == '__main__':
         mytz = os.environ.get("Your_Time_Zone", "Asia/Riyadh")  # Your Time Zone
         nightshift_only = os.environ.get("NightShift_Only", "yes")  # NightShift Only
         target_reading = int(os.environ.get("Target_Reading", 150))  # Target Reading
-        low_reading = int(os.environ.get("Low_Reading", 60))  # Target Reading
-        high_reading = int(os.environ.get("High_Reading", 350))  # Target Reading
+        low_threshold = int(os.environ.get("Low_Reading", 60))  # Target Reading
+        high_threshold = int(os.environ.get("High_Reading", 350))  # Target Reading
         high_margin = int(os.environ.get("High_Margin", 0))  # High Margin
         low_margin = int(os.environ.get("Low_Margin", 15))  # High Margin
         api_endpoints = {
