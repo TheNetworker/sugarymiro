@@ -126,7 +126,7 @@ class api_client(object):
 
 class NightScout_Tools(api_client):
     def __init__(self, url, api_key, user_timezone, target_reading, low_reading,
-                 high_reading, margin):
+                 high_reading, high_margin, low_margin):
 
         super(NightScout_Tools, self).__init__(url=url, )
         self.api_token = hashlib.sha1(api_key.encode()).hexdigest()
@@ -136,7 +136,8 @@ class NightScout_Tools(api_client):
         self.target_reading = target_reading
         self.low_reading = low_reading
         self.high_reading = high_reading
-        self.margin = margin
+        self.high_margin = high_margin
+        self.low_margin = low_margin
         self.user_timezone = user_timezone
         self.refined_data = []
 
@@ -231,8 +232,8 @@ class NightScout_Tools(api_client):
             mean_sgv_within_duration = sum(sgvs) / len(sgvs)
             last_entry_direction = self.refined_data[-1]["direction"]
 
-            mean_high_target = (self.target_reading + self.high_reading) / 2
-            mean_low_target = (self.target_reading + self.low_reading) / 2
+            mean_between_high_and_target = (self.target_reading + self.high_reading) / 2
+            mean_between_low_and_target = (self.target_reading + self.low_reading) / 2
             response_payload["last_data_entry"] = self.refined_data[0]
 
             # Test Data
@@ -240,12 +241,12 @@ class NightScout_Tools(api_client):
             # mean_sgv_within_duration = 50 #testing the low
             # last_entry_direction = "FLAT" #bypass the last entry direction check (i.e action:wait)
 
-            if mean_sgv_within_duration > (mean_high_target + self.margin):  # 270
+            if mean_sgv_within_duration > (mean_between_high_and_target + self.high_margin):  # 270
                 if last_entry_direction in self.hypoglycemia_directions:
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another ~ 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
-                    response_payload["expected"] = mean_high_target + self.margin
+                    response_payload["expected"] = mean_between_high_and_target + self.high_margin
 
                     return response_payload  # snooze for ~ 15 minutes and then check again
 
@@ -253,26 +254,26 @@ class NightScout_Tools(api_client):
                     response_payload["action"] = "high_alert"
                     response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
-                    response_payload["expected"] = mean_high_target + self.margin
+                    response_payload["expected"] = mean_between_high_and_target + self.high_margin
 
                     return response_payload
 
 
-            elif mean_sgv_within_duration < (mean_low_target - self.margin):
+            elif mean_sgv_within_duration < (mean_between_low_and_target - self.low_margin):
 
                 if last_entry_direction in self.hyperglycemia_directions:
 
                     response_payload["action"] = "wait"
                     response_payload["sleep_in_sec"] = 930  # wait for another 15 minutes and check again till it become stable
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
-                    response_payload["expected"] = mean_low_target - self.margin
+                    response_payload["expected"] = mean_between_low_and_target - self.low_margin
                     return response_payload  # snooze for ~ 15 minutes and then check again
 
                 else:  # either 'FLAT' or 'NOT COMPUTABLE'
                     response_payload["action"] = "low_alert"
                     response_payload["sleep_in_sec"] = self.default_retry_time / 2  # snooze for ~ half time till user correct it and then check again
                     response_payload["mean_value_within_duration"] = mean_sgv_within_duration
-                    response_payload["expected"] = mean_low_target - self.margin
+                    response_payload["expected"] = mean_between_low_and_target - self.low_margin
                     return response_payload
 
             else:
@@ -307,7 +308,8 @@ def dispatch():
                                 target_reading=target_reading,
                                 low_reading=low_reading,
                                 high_reading=high_reading,
-                                margin=margin,
+                                high_margin=high_margin,
+                                low_margin=low_margin,
                                 )
     supported_algorithms = [ns_agent.too_high_too_low_for_long_time_algorithm]
     for i in supported_algorithms:
@@ -356,7 +358,8 @@ if __name__ == '__main__':
         target_reading = int(os.environ.get("Target_Reading", 150))  # Target Reading
         low_reading = int(os.environ.get("Low_Reading", 60))  # Target Reading
         high_reading = int(os.environ.get("High_Reading", 350))  # Target Reading
-        margin = int(os.environ.get("Margin", 15))  # Target Reading
+        high_margin = int(os.environ.get("High_Margin", 0))  # High Margin
+        low_margin = int(os.environ.get("Low_Margin", 15))  # High Margin
         api_endpoints = {
             "sgv": "api/v1/entries/sgv.json",
             "ifttt": "trigger/{}/with/key/{}".format("average_is_not_ok", ifttt_key),

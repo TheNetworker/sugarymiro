@@ -46,8 +46,13 @@
       "value": "350",
       "required": true
     },
-    "margin": {
-      "description": "The app will send notification if the calculated average reading is exceeding high/low average + configured margin. For example, if the high average is: 350 and the margin is: 15, then the app will send notification if the calculated average reading is larger than: (350+150)/2=250 + 15 = 265. The default margin (15) should be fine for most cases.",
+    "High_Margin": {
+      "description": "The app will send notification if the calculated average reading is exceeding high average + configured margin. For example, if the high reading is set to: 350, target reading is set to: 150 and the margin is: 15, then the app will send notification if the calculated average SVG over last period of time is above than: (350+150)/2=250 + 15 = 265. ",
+      "value": "15",
+      "required": false
+    },
+    "Low_Margin": {
+      "description": "The app will send notification if the calculated average reading is exceeding low average - configured margin. For example, if the low reading is set to: 60, target reading is set to: 150 and the margin is: 15, then the app will send notification if the calculated average SVG over last period of time is below than: (150-60)/2=90 - 15 = 75.",
       "value": "15",
       "required": false
     }
