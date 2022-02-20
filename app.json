@@ -17,7 +17,7 @@
       "required": true
     },
     "NightScout_API_Key": {
-      "description": "Please provide the API key of your NightScout server which is being configured during initial NightScout instance deployment. If you don't know it, then go to settings of your app under (https://dashboard.heroku.com/apps) then 'Reveal Config Vars'. it should be in 'API_SECRET'",
+      "description": "Please provide the API key of your NightScout server which is being configured during initial NightScout instance deployment. If you don't know it, then go to the settings of your app under (https://dashboard.heroku.com/apps) then 'Reveal Config Vars'. it should be in 'API_SECRET'",
       "value": "",
       "required": true
     },
