@@ -171,7 +171,7 @@ class NightScout_Tools(api_client):
         self.entries = self.get(api_endpoint=api_endpoints[type])
         self.data = self.entries.get("data")
         error = self.entries.get("error_message")
-        pprint(self.entries)
+        # pprint(self.entries)
         if self.data and not error:
             if isinstance(self.data, list):
                 for index, value in enumerate(self.data):
@@ -205,7 +205,7 @@ class NightScout_Tools(api_client):
         :return: True if the data is valid, False otherwise
         '''
         self.refined_data = self.get_entries(type=type)
-        print(self.refined_data[-1])
+        # print(self.refined_data[-1])
         if self.refined_data:
             if self.refined_data[-1][
                 "seconds_difference"] > 4250:  # if the last (oldest) entry is more than 60 minutes old then data is not valid (14 entries x 5 minutes= 4200 + 50(buffer) = 4250 seconds)
