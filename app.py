@@ -379,11 +379,11 @@ if __name__ == '__main__':
         ifttt_key = os.environ.get("Your_IFTTT_Key").strip()  # IFTTT Key
         mytz = os.environ.get("Your_Time_Zone", "Asia/Riyadh").strip()  # Your Time Zone
         nightshift_only = os.environ.get("NightShift_Only", "no").strip()  # NightShift Only
-        target_reading = int(os.environ.get("Target_Reading", 150).strip())  # Target Reading
-        low_threshold = int(os.environ.get("Low_Reading", 60).strip())  # Target Reading
-        high_threshold = int(os.environ.get("High_Reading", 350).strip())  # Target Reading
-        high_margin = int(os.environ.get("High_Margin", 0).strip())  # High Margin
-        low_margin = int(os.environ.get("Low_Margin", 15).strip())  # High Margin
+        target_reading = int(str(os.environ.get("Target_Reading", 150)).strip())  # Target Reading
+        low_threshold = int(str(os.environ.get("Low_Threshold", 60)).strip())  # Target Reading
+        high_threshold = int(str(os.environ.get("High_Threshold", 350)).strip())  # Target Reading
+        high_margin = int(str(os.environ.get("High_Margin", 0)).strip())  # High Margin
+        low_margin = int(str(os.environ.get("Low_Margin", 15)).strip())  # High Margin
         api_endpoints = {
             "sgv": "api/v1/entries/sgv.json",
             "ifttt": "trigger/{}/with/key/{}".format("average_is_not_ok", ifttt_key),
