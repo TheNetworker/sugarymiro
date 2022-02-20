@@ -171,7 +171,7 @@ class NightScout_Tools(api_client):
         self.entries = self.get(api_endpoint=api_endpoints[type])
         self.data = self.entries.get("data")
         error = self.entries.get("error_message")
-        # pprint(entries)
+        pprint(self.entries)
         if self.data and not error:
             if isinstance(self.data, list):
                 for index, value in enumerate(self.data):
@@ -185,9 +185,9 @@ class NightScout_Tools(api_client):
                         (entry_actual_date_datetime - self.get_current_date_now_at_user()).total_seconds())
 
                     # temp_dict["actual_date_in_epoch"] = int(entry_actual_date_datetime.timestamp()) #epoch
-                    temp_dict["actual_date_in_str"] = entry_actual_date_datetime.isoformat()  # isoformat
+                    temp_dict["actual_date_in_str"] = entry_actual_date_datetime.isoformat()  # isoformat #date in the Nightscout record converted to user timezone
 
-                    temp_dict["original_date_in_str"] = value["dateString"]
+                    temp_dict["original_date_in_str"] = value["dateString"] #date in the Nightscout record
                     # temp_dict["original_date_in_epoch"] = entry_date
                     temp_dict["direction"] = value["direction"]
                     temp_dict["seconds_difference"] = number_of_seconds_difference
@@ -205,10 +205,10 @@ class NightScout_Tools(api_client):
         :return: True if the data is valid, False otherwise
         '''
         self.refined_data = self.get_entries(type=type)
-        # print(self.refined_data[-1])
+        print(self.refined_data[-1])
         if self.refined_data:
             if self.refined_data[-1][
-                "seconds_difference"] > 3800:  # if the last (oldest) entry is more than 60 minutes old then data is not valid
+                "seconds_difference"] > 4250:  # if the last (oldest) entry is more than 60 minutes old then data is not valid (14 entries x 5 minutes= 4200 + 50(buffer) = 4250 seconds)
                 return False  # ignore
 
         return True
