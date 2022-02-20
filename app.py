@@ -149,12 +149,12 @@ class NightScout_Tools(api_client):
         '''
         A method used to translate the epoch time found in SGV entry to the actual timezone at user end
         :param sgv_epoch_time: The epoch time of the SGV entry
-        :return: datetime object of the sgv entry
+        :return: datetime object of the sgv entry which is calculated from epoch time.
         '''
         return datetime.datetime.fromtimestamp(
             divmod(sgv_epoch_time, 1000)[0], tz=pytz.timezone(self.user_timezone))
 
-    def get_current_date_now(self):
+    def get_current_date_now_at_user(self):
         '''
         A method used to get the current  timezone at user end
         :return: datetime object of the actual timezone
@@ -168,13 +168,13 @@ class NightScout_Tools(api_client):
         :param type: operate over the SGV entries or the BG entries
         :return: return the SGV entries after refining them
         '''
-        entries = self.get(api_endpoint=api_endpoints[type])
-        data = entries.get("data")
-        error = entries.get("error_message")
+        self.entries = self.get(api_endpoint=api_endpoints[type])
+        self.data = self.entries.get("data")
+        error = self.entries.get("error_message")
         # pprint(entries)
-        if data and not error:
-            if isinstance(data, list):
-                for index, value in enumerate(data):
+        if self.data and not error:
+            if isinstance(self.data, list):
+                for index, value in enumerate(self.data):
                     temp_dict = {}
                     temp_dict[type] = value[type]
                     entry_date = value["date"]
@@ -182,7 +182,7 @@ class NightScout_Tools(api_client):
                     entry_actual_date_datetime = self._get_actual_timezone_in_the_entry(entry_date)
 
                     number_of_seconds_difference = abs(
-                        (entry_actual_date_datetime - self.get_current_date_now()).total_seconds())
+                        (entry_actual_date_datetime - self.get_current_date_now_at_user()).total_seconds())
 
                     # temp_dict["actual_date_in_epoch"] = int(entry_actual_date_datetime.timestamp()) #epoch
                     temp_dict["actual_date_in_str"] = entry_actual_date_datetime.isoformat()  # isoformat
@@ -191,7 +191,7 @@ class NightScout_Tools(api_client):
                     # temp_dict["original_date_in_epoch"] = entry_date
                     temp_dict["direction"] = value["direction"]
                     temp_dict["seconds_difference"] = number_of_seconds_difference
-                    temp_dict["current_date_now"] = self.get_current_date_now().isoformat()
+                    temp_dict["current_date_now"] = self.get_current_date_now_at_user().isoformat()
                     self.refined_data.append(temp_dict)
         else:
             self.refined_data = []
@@ -208,10 +208,20 @@ class NightScout_Tools(api_client):
         # print(self.refined_data[-1])
         if self.refined_data:
             if self.refined_data[-1][
-                "seconds_difference"] > 6000:  # if the last entry is more than 60 minutes old then data is not valid
+                "seconds_difference"] > 3800:  # if the last (oldest) entry is more than 60 minutes old then data is not valid
                 return False  # ignore
 
         return True
+
+    def reset_data(self):
+        '''
+        A method used to reset the data to empty
+        :return:
+        '''
+
+        del self.refined_data
+        del self.entries
+        del self.data
 
     def too_high_too_low_for_long_time_algorithm(self, type="sgv"):  # nightscout Entrypoint
         '''
@@ -284,7 +294,8 @@ class NightScout_Tools(api_client):
                 return response_payload
 
         else:
-            print("Data is not valid")
+            print("Data is not valid. Returned data from NightScout are old, Seconds difference is {}, Retrying in {} seconds".format(
+                self.refined_data[-1]["seconds_difference"], self.default_retry_time))
             response_payload[
                 "error_message"] = "Returned data from NightScout are old, Seconds difference is {}, Retrying in {} seconds".format(
                 self.refined_data[-1]["seconds_difference"], self.default_retry_time)
@@ -354,23 +365,25 @@ def dispatch():
                     print("No action taken, everything seems normal")
 
 
-
+    #reset the data to avoid being accessed by other threads
+    print("Resetting the data")
+    ns_agent.reset_data()
     return next_sleep
 
 
 if __name__ == '__main__':
     while True:
         # Get User Data
-        ns_url = os.environ.get("NightScout_URL")  # NightScout URL
-        api_key = os.environ.get("NightScout_API_Key")  # NightScout API Key
-        ifttt_key = os.environ.get("Your_IFTTT_Key")  # IFTTT Key
-        mytz = os.environ.get("Your_Time_Zone", "Asia/Riyadh")  # Your Time Zone
-        nightshift_only = os.environ.get("NightShift_Only", "no")  # NightShift Only
-        target_reading = int(os.environ.get("Target_Reading", 150))  # Target Reading
-        low_threshold = int(os.environ.get("Low_Reading", 60))  # Target Reading
-        high_threshold = int(os.environ.get("High_Reading", 350))  # Target Reading
-        high_margin = int(os.environ.get("High_Margin", 0))  # High Margin
-        low_margin = int(os.environ.get("Low_Margin", 15))  # High Margin
+        ns_url = os.environ.get("NightScout_URL").strip()  # NightScout URL
+        api_key = os.environ.get("NightScout_API_Key").strip()  # NightScout API Key
+        ifttt_key = os.environ.get("Your_IFTTT_Key").strip()  # IFTTT Key
+        mytz = os.environ.get("Your_Time_Zone", "Asia/Riyadh").strip()  # Your Time Zone
+        nightshift_only = os.environ.get("NightShift_Only", "no").strip()  # NightShift Only
+        target_reading = int(os.environ.get("Target_Reading", 150).strip())  # Target Reading
+        low_threshold = int(os.environ.get("Low_Reading", 60).strip())  # Target Reading
+        high_threshold = int(os.environ.get("High_Reading", 350).strip())  # Target Reading
+        high_margin = int(os.environ.get("High_Margin", 0).strip())  # High Margin
+        low_margin = int(os.environ.get("Low_Margin", 15).strip())  # High Margin
         api_endpoints = {
             "sgv": "api/v1/entries/sgv.json",
             "ifttt": "trigger/{}/with/key/{}".format("average_is_not_ok", ifttt_key),
