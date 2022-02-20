@@ -10,7 +10,7 @@
 
 # Introduction
 
-This is an application used to analyze SGV entries returned from NightScout online instance and send notification to the user using the IFTTT service if it's high/low for long period of time. This allows you to get **actionable insights** on Glucose patterns throughout the day
+This is an application used to analyze SGV entries returned from the NightScout online instance and send a notification to the user using the IFTTT service if it's high/low for a long period of time. This allows you to get **actionable insights** on Glucose patterns throughout the day
 
 
 
