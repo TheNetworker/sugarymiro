@@ -496,3 +496,11 @@ GitHub.sublime-settings
 .claude/settings.local.json
 .claude/*.local.*
 .claude/commands
+
+# The Visual Studio `[Ss]cripts` pattern above excludes the whole scripts/ dir, and
+# git never descends into an excluded directory — so re-include the directory FIRST,
+# then re-exclude its contents, then whitelist the two files we ship.
+!scripts/
+scripts/*
+!scripts/upload_to_macstudio.sh
+!scripts/download_from_macstudio.sh
