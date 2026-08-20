@@ -484,3 +484,15 @@ GitHub.sublime-settings
 
 
 
+
+# --- migration 2026-08-20: agent/editor local state ---
+.vscode/settings.json
+.opencode/
+.junie/
+.obsidian/
+.cursor/
+.cursorignore
+.claude/memory/
+.claude/settings.local.json
+.claude/*.local.*
+.claude/commands

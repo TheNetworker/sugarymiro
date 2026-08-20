@@ -348,6 +348,7 @@ def dispatch():
                 ifttt_response = ifttt_agent.post(api_endpoint=api_endpoints["ifttt"],
                                                   payload=ifttt_payload)
 
+
                 # print(ifttt_response)
                 # print(ifttt_agent.print_details())
                 if ifttt_response["status_code"] != 200:  # something wrong happen with IFTTT, will try again in 30sec
