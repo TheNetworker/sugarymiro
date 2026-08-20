@@ -58,7 +58,11 @@ if [[ ${#PATHS[@]} -eq 0 ]]; then
     [[ -f "$MANIFEST" ]] || die "no .macstudio-sync manifest at $MANIFEST"
     while IFS= read -r line; do
         line="${line%%#*}"
-        line="$(printf '%s' "$line" | xargs || true)"
+        # Trim with parameter expansion, NOT xargs: xargs parses shell quoting, so a
+        # manifest line like  data/it's/  hits an unterminated quote and silently
+        # becomes empty — the path is then skipped while the script still says "done".
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
         [[ -n "$line" ]] && PATHS+=("$line")
     done < "$MANIFEST"
 fi

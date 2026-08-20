@@ -69,7 +69,11 @@ Create one listing the gitignored paths to sync, e.g.:
   printf 'artifacts/\\ndata/\\n' > '$MANIFEST'"
     while IFS= read -r line; do
         line="${line%%#*}"                      # strip comments
-        line="$(printf '%s' "$line" | xargs || true)"   # trim whitespace
+        # Trim with parameter expansion, NOT xargs: xargs parses shell quoting, so a
+        # manifest line like  data/it's/  hits an unterminated quote and silently
+        # becomes empty — the path is then skipped while the script still says "done".
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
         [[ -n "$line" ]] && PATHS+=("$line")
     done < "$MANIFEST"
 fi
