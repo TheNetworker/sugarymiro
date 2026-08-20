@@ -1,0 +1,5 @@
+# Paths synced to/from the Mac Studio by scripts/{upload_to,download_from}_macstudio.sh
+# One path per line, relative to the repo root. '#' starts a comment.
+# List only GITIGNORED payload — tracked code syncs through GitHub.
+artifacts/
+data/
