@@ -504,3 +504,10 @@ GitHub.sublime-settings
 scripts/*
 !scripts/upload_to_macstudio.sh
 !scripts/download_from_macstudio.sh
+
+# Mac Studio artifact-sync pair. The canonical copy lives once in
+# VS_Code/scripts/macstudio/; each project carries a SYMLINK to it. Committing that
+# symlink would store an absolute OneDrive path, which is a dangling link on every
+# other machine — including the Mac Studio itself, which clones from GitHub.
+scripts/upload_to_macstudio.sh
+scripts/download_from_macstudio.sh
